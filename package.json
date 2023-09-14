@@ -37,8 +37,7 @@
   "dependencies": {
     "lodash.debounce": "^4.0.8",
     "pdfjs-dist": "2.16.105",
-    "react-rnd": "^10.1.10",
-    "highlighter": "git+https://github.com/vivekinfinity/react-pdf-highlighter.git#main"
+    "react-rnd": "^10.1.10"
   },
   "repository": {
     "type": "git",
