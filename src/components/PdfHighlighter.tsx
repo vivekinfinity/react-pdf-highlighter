@@ -69,7 +69,7 @@ interface Props<T_HT> {
     isScrolledTo: boolean
   ) => JSX.Element;
   highlights: Array<T_HT>;
-  onScrollChange: () => void;
+  onScrollChange: (pageNumber: number) => void;
   scrollRef: (scrollTo: (highlight: T_HT) => void) => void;
   pdfDocument: PDFDocumentProxy;
   pdfScaleValue: string;
@@ -117,7 +117,9 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
   highlightRoots: {
     [page: number]: { reactRoot: Root; container: Element };
   } = {};
-  unsubscribe = () => {};
+  unsubscribe = () => {
+    this.viewer?.container?.removeEventListener("scroll", this.onScroll);
+  };
 
   constructor(props: Props<T_HT>) {
     super(props);
@@ -129,6 +131,7 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
 
   componentDidMount() {
     this.init();
+    this.viewer.container.addEventListener("scroll", this.onScroll);
   }
 
   attachRef = () => {
@@ -449,7 +452,9 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
   onScroll = () => {
     const { onScrollChange } = this.props;
 
-    onScrollChange();
+    const currentPageNumber = this.viewer.currentPageNumber;
+
+    onScrollChange(currentPageNumber);
 
     this.setState(
       {
@@ -458,7 +463,7 @@ export class PdfHighlighter<T_HT extends IHighlight> extends PureComponent<
       () => this.renderHighlightLayers()
     );
 
-    this.viewer.container.removeEventListener("scroll", this.onScroll);
+    // this.viewer.container.removeEventListener("scroll", this.onScroll);
   };
 
   onMouseDown: PointerEventHandler = (event) => {
